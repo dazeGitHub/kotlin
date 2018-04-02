@@ -20,6 +20,7 @@ import com.intellij.openapi.command.impl.DummyProject
 import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
 import org.jetbrains.kotlin.kapt3.KaptContext
+import org.jetbrains.kotlin.kapt3.KaptPaths
 import org.jetbrains.kotlin.kapt3.diagnostic.KaptError
 import org.jetbrains.kotlin.kapt3.doAnnotationProcessing
 import org.jetbrains.kotlin.kapt3.util.KaptLogger
@@ -80,22 +81,26 @@ class JavaKaptContextTest {
     }
 
     private fun doAnnotationProcessing(javaSourceFile: File, processor: Processor, outputDir: File) {
-        KaptContext(KaptLogger(isVerbose = true, messageCollector = messageCollector),
-                    DummyProject.getInstance(),
-                    bindingContext = BindingContext.EMPTY,
-                    compiledClasses = emptyList(),
-                    origins = emptyMap(),
-                    generationState = null,
-                    mapDiagnosticLocations = true,
-                    processorOptions = emptyMap()
-        ).doAnnotationProcessing(
-                listOf(javaSourceFile),
-                listOf(processor),
-                emptyList(), // compile classpath
-                emptyList(), // annotation processing classpath
-                outputDir,
-                outputDir,
-                withJdk = true)
+        KaptContext(
+            KaptPaths(
+                compileClasspath = emptyList(),
+                annotationProcessingClasspath = emptyList(),
+                javaSourceRoots = emptyList(),
+                sourcesOutputDir = outputDir,
+                classFilesOutputDir = outputDir,
+                stubsOutputDir = outputDir,
+                incrementalDataOutputDir = outputDir
+            ),
+            withJdk = true,
+            logger = KaptLogger(isVerbose = true, messageCollector = messageCollector),
+            project = DummyProject.getInstance(),
+            bindingContext = BindingContext.EMPTY,
+            compiledClasses = emptyList(),
+            origins = emptyMap(),
+            generationState = null,
+            mapDiagnosticLocations = true,
+            processorOptions = emptyMap()
+        ).doAnnotationProcessing(listOf(javaSourceFile), listOf(processor))
     }
 
     @Test
