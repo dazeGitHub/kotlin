@@ -5242,6 +5242,11 @@ public class DiagnosticsTestGenerated extends AbstractDiagnosticsTest {
                 runTest("compiler/testData/diagnostics/tests/delegatedProperty/backingField.kt");
             }
 
+            @TestMetadata("callableReferenceToVariableRewrite.kt")
+            public void testCallableReferenceToVariableRewrite() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/delegatedProperty/callableReferenceToVariableRewrite.kt");
+            }
+
             @TestMetadata("defaultGetter.kt")
             public void testDefaultGetter() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/delegatedProperty/defaultGetter.kt");

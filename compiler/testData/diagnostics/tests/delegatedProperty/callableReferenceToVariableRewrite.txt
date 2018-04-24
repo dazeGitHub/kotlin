@@ -1,0 +1,68 @@
+package
+
+public inline fun </*0*/ T> kotlin.collections.Iterable<T>.filter(/*0*/ predicate: (T) -> kotlin.Boolean): kotlin.collections.List<T>
+
+public final class CreateOrderContext {
+    public constructor CreateOrderContext(/*0*/ initialItems: kotlin.collections.List<OrderItemDTO /* = DTO<OrderItem> */>)
+    private final val initialItems: kotlin.collections.List<OrderItemDTO /* = DTO<OrderItem> */>
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    internal final fun items(): kotlin.collections.List<OrderItemDTO /* = DTO<OrderItem> */>
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public open class DTO</*0*/ T : Entity<kotlin.Int>> {
+    public constructor DTO</*0*/ T : Entity<kotlin.Int>>(/*0*/ original: T?)
+    public final val original: T?
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public final operator fun </*0*/ R> get(/*0*/ prop: kotlin.reflect.KProperty1<T, R>): R
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public open class Entity</*0*/ ID : kotlin.Comparable<ID>> {
+    public constructor Entity</*0*/ ID : kotlin.Comparable<ID>>(/*0*/ id: EntityID<ID>)
+    public final val id: EntityID<ID>
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public abstract class EntityID</*0*/ T : kotlin.Comparable<T>> : kotlin.Comparable<EntityID<T>> {
+    public constructor EntityID</*0*/ T : kotlin.Comparable<T>>(/*0*/ id: T?, /*1*/ table: IdTable<T>)
+    public final val table: IdTable<T>
+    public abstract override /*1*/ /*fake_override*/ fun compareTo(/*0*/ other: EntityID<T>): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public abstract class IdTable</*0*/ T : kotlin.Comparable<T>> {
+    public constructor IdTable</*0*/ T : kotlin.Comparable<T>>(/*0*/ name: kotlin.String = ...)
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public abstract class IntEntity : Entity<kotlin.Int> {
+    public constructor IntEntity(/*0*/ id: EntityID<kotlin.Int>)
+    public final override /*1*/ /*fake_override*/ val id: EntityID<kotlin.Int>
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class OrderItem : IntEntity, Parameterized<OrderItem> {
+    public constructor OrderItem(/*0*/ id: EntityID<kotlin.Int>)
+    public final override /*1*/ /*fake_override*/ val id: EntityID<kotlin.Int>
+    public open override /*2*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*2*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*2*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public interface Parameterized</*0*/ out T : IntEntity> {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+private typealias OrderItemDTO = DTO<OrderItem>
