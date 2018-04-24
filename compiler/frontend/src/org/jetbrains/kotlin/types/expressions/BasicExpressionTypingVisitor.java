@@ -1695,13 +1695,18 @@ public class BasicExpressionTypingVisitor extends ExpressionTypingVisitor {
 
         List<KtExpression> indices = arrayAccessExpression.getIndexExpressions();
         // The accumulated data flow info of all index expressions is saved on the last index
-        KotlinTypeInfo resultTypeInfo = arrayTypeInfo;
-        if (!indices.isEmpty()) {
-            resultTypeInfo = facade.getTypeInfo(indices.get(indices.size() - 1), context);
+        KtExpression lastExpression;
+        if (isGet) {
+            lastExpression = !indices.isEmpty() ? indices.get(indices.size() - 1) : null;
+        }
+        else {
+            lastExpression = rightHandSide;
         }
 
-        if (!isGet) {
-            resultTypeInfo = facade.getTypeInfo(rightHandSide, context);
+        KotlinTypeInfo resultTypeInfo =
+                lastExpression != null ? context.trace.getBindingContext().get(EXPRESSION_TYPE_INFO, lastExpression) : null;
+        if (resultTypeInfo == null) {
+            resultTypeInfo = arrayTypeInfo;
         }
 
         if ((isImplicit && !functionResults.isSuccess()) || !functionResults.isSingleResult()) {
