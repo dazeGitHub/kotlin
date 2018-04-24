@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.fir.java.JavaSymbolProvider
 import org.jetbrains.kotlin.fir.resolve.FirProvider
+import org.jetbrains.kotlin.fir.symbols.ConeClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeClassSymbol
 import org.jetbrains.kotlin.fir.symbols.ConeTypeParameterSymbol
 import org.jetbrains.kotlin.fir.types.ConeClassErrorType
@@ -17,7 +18,6 @@ import org.jetbrains.kotlin.fir.types.impl.ConeClassTypeImpl
 import org.jetbrains.kotlin.load.java.structure.JavaClass
 import org.jetbrains.kotlin.load.java.structure.classId
 import org.jetbrains.kotlin.load.java.structure.impl.JavaClassImpl
-import org.jetbrains.kotlin.load.java.structure.impl.JavaClassifierTypeImpl
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.tail
 
@@ -40,34 +40,32 @@ class JavaClassSymbol(val symbolProvider: JavaSymbolProvider, val firProvider: F
     }
 
     override val superTypes: List<ConeClassLikeType> by lazy {
-        val psi = (javaClass as? JavaClassImpl)!!.psi
-        psi.superTypes.mapNotNull {
-            val symbol = if (it is KtLightClass) {
-                val kotlinOrigin = it.kotlinOrigin ?: return@mapNotNull null
-                val fqName = kotlinOrigin.fqName ?: return@mapNotNull null
-                val packageFqName = kotlinOrigin.containingKtFile.packageFqName
-                val classId = ClassId(
-                    packageFqName,
-                    fqName.tail(packageFqName),
-                    false
-                )
-                firProvider.getSymbolByFqName(classId)
-            } else {
-                val type = JavaClassifierTypeImpl(it)
-
-                (type.classifier as? JavaClass)?.let { symbolProvider.getSymbolByJavaClass(it) }
-                        ?: return@mapNotNull ConeClassErrorType("Unsupported: Non JavaClass superType in JavaClassSymbol") // TODO: Support it
-            }
-            if (symbol != null) {
-                ConeClassTypeImpl(
-                    symbol as JavaClassSymbol,
-                    emptyArray() // TODO: Fix this?
-                )
-            } else {
-                ConeClassErrorType("Unsupported: no (null) symbol for JavaClass supertype: ${it.name}")
-            }
+        javaClass.supertypes.mapNotNull {
+            (it.classifier as? JavaClass)?.let { superTypeJavaClass ->
+                val superTypePsiClass = (superTypeJavaClass as? JavaClassImpl)?.psi
+                val symbol = if (superTypePsiClass is KtLightClass) {
+                    val kotlinOrigin = superTypePsiClass.kotlinOrigin ?: return@mapNotNull null
+                    val fqName = kotlinOrigin.fqName ?: return@mapNotNull null
+                    val packageFqName = kotlinOrigin.containingKtFile.packageFqName
+                    val classId = ClassId(
+                        packageFqName,
+                        fqName.tail(packageFqName),
+                        false
+                    )
+                    firProvider.getSymbolByFqName(classId)
+                } else {
+                    symbolProvider.getSymbolByJavaClass(superTypeJavaClass)
+                }
+                if (symbol != null) {
+                    ConeClassTypeImpl(
+                        symbol as ConeClassLikeSymbol,
+                        emptyArray() // TODO: Provide type arguments for Java class supertypes
+                    )
+                } else {
+                    ConeClassErrorType("Unsupported: no (null) symbol for JavaClass supertype: ${superTypeJavaClass.name}")
+                }
+            } ?: ConeClassErrorType("Unsupported: Non JavaClass superType in JavaClassSymbol") // TODO: Support it
         }
-
     }
 }
 

@@ -30,9 +30,6 @@ class JavaSymbolProvider(
         return classCache.lookupCacheOrCalculate(classId) {
             val facade = KotlinJavaPsiFacade.getInstance(project)
             val foundClass: JavaClass? = facade.findClass(classId, searchScope)
-            if ((foundClass as? JavaClassImpl)?.psi is KtLightClass) {
-                return@lookupCacheOrCalculate null
-            }
             foundClass?.let { JavaClassSymbol(this, session.service(), it) }
         }
     }
@@ -40,10 +37,7 @@ class JavaSymbolProvider(
     fun getSymbolByJavaClass(javaClass: JavaClass): ConeSymbol? {
         val classId = javaClass.classId ?: error("!")
         return classCache.lookupCacheOrCalculate(classId) {
-            if ((javaClass as? JavaClassImpl)?.psi is KtLightClass) {
-                return@lookupCacheOrCalculate null
-            }
-            javaClass.let { JavaClassSymbol(this, session.service(), it) }
+            JavaClassSymbol(this, session.service(), javaClass)
         }
     }
 
