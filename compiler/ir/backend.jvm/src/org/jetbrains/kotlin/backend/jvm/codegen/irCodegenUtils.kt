@@ -5,8 +5,12 @@
 
 package org.jetbrains.kotlin.backend.jvm.codegen
 
+import org.jetbrains.kotlin.codegen.FrameMapBase
 import org.jetbrains.kotlin.ir.declarations.IrConstructor
+import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrFunction
+
+class IrFrameMap : FrameMapBase<IrDeclaration>()
 
 internal val IrFunction.isStatic
     get() = this.dispatchReceiverParameter == null && this !is IrConstructor
