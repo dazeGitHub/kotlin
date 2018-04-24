@@ -350,7 +350,7 @@ public class KotlinCompilerConfigurableTab implements SearchableConfigurable, Co
         apiVersionComboBox.addItem(VersionView.LatestStable.INSTANCE);
 
         for (LanguageVersion version : LanguageVersion.values()) {
-            if (!version.isStable() && !KotlinInternalMode.Instance.getEnabled()) {
+            if (!version.isStable() && !ApplicationManager.getApplication().isInternal) {
                 continue;
             }
 
