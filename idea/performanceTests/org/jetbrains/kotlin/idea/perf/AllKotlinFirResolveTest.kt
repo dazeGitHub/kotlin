@@ -17,8 +17,8 @@ import org.jetbrains.kotlin.fir.resolve.FirProvider
 import org.jetbrains.kotlin.fir.resolve.impl.FirProviderImpl
 import org.jetbrains.kotlin.fir.resolve.transformers.FirTotalResolveTransformer
 import org.jetbrains.kotlin.fir.service
-import org.jetbrains.kotlin.idea.actions.internal.IdeFirDependenciesSymbolProvider
 import org.jetbrains.kotlin.idea.caches.project.productionSourceInfo
+import org.jetbrains.kotlin.idea.fir.IdeFirDependenciesSymbolProvider
 import org.jetbrains.kotlin.psi.KtFile
 import java.io.File
 import kotlin.system.measureNanoTime
